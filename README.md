@@ -26,17 +26,17 @@ Running the script with no options will display the below help information:
 							This can be Computer Name, Serial Number, Asset Number or another unique identifier.
 							If this finds more than one match it will exit.
 	-d DestinationComputer 	Supply an identifier to use as the destination of the information to import the source computer's details into.
-		-c CasperURL		Supply the Casper URL to contact for the work. if not specified, then the default set 
+	-c CasperURL			Supply the Casper URL to contact for the work. if not specified, then the default set 
 							in the script will be used.
 	-u APIUsername			Supply the API username to access the Casper server and carry out the work.
 	-p APIPassword 			Supply the API Password to access the Casper server and carry out the work.
 							ENCLOSE ALL PASSWORDS IN SINGLE QUOTES ' ' TO ENSURE CHARACTERS ARE PASSED CORRECTLY!
 							Also please do not use the following characters for passwords:
 							\ 	' 	£ 	" 	` 	% 	~
-	-P					The API Password will be requested.
-	-n					Do not prompt to carry out the export/import, just do it!
-	-f PathToFile		Use a tab delimited file to specify multiple source and destination Macs to work on.
-	-h					This help message
+	-P						The API Password will be requested.
+	-n						Do not prompt to carry out the export/import, just do it!
+	-f PathToFile			Use a tab delimited file to specify multiple source and destination Macs to work on.
+	-h						This help message
 	
 	
 	API PERMISSIONS:	These MUST be allowed for the specified API user:
