@@ -33,7 +33,7 @@ Running the script with no options will display the below help information:
 	-p APIPassword 			Supply the API Password to access the Casper server and carry out the work.
 					ENCLOSE ALL PASSWORDS IN SINGLE QUOTES ' ' TO ENSURE CHARACTERS ARE PASSED CORRECTLY!
 					Also please do not use the following characters for passwords:
-					\\ 	' 	£ 	\" 	\` 	% 	~
+					\ 	' 	£ 	" 	` 	% 	~
 	-P				The API Password will be requested.
 	-n				Do not prompt to carry out the export/import, just do it!
 	-f PathToFile			Use a tab delimited file to specify multiple source and destination Macs to work on.
