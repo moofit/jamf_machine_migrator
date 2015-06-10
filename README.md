@@ -15,19 +15,18 @@ Notes:
 
 - Static group assignments aren't currently migrated (this is on the to-do list)
 - Script populated EAs aren't migrated as they are dynamically generated during inventory collections
+- If more than one result is found for either the source or destination computer, the script will exit.
 
 Running the script with no options will display the below help information:
 
-	Usage: CasperMachineMigrator [-v] -s SourceAssetNumber [-h] [-d DestinationAssetNumber] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
+	Usage: $0 [-v] -s SourceComputer [-h] [-d DestinationComputer] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
 	
 	-v				Verbose mode. Output all the things
-	-s SourceAssetNumber		Supply an Asset Number to use as the souce of the information.
-					Wildcards can be used with a *
-					E.g. to find all begining with 'tes..' use "tes*"
-					This will also take Serial Numbers, Departments, Buildings etc,
-					however this can increase the likelihood of multiple matches
-	-d DestinationAssetNumber 	Supply a specifc Asset Number to import the source computer's details into.
-	-c CasperURL			Supply the Casper URL to contact for the work. if not specified, then the default set 
+	-s SourceComputer		Supply an identifier to use as the source of the information.
+					This can be Computer Name, Serial Number, Asset Number or another unique identifer.
+					If this finds more than one match it will exit.
+	-d DestinationComputer 	Supply an identifier to use as the destination of the information to import the source computer's details into.
+		-c CasperURL			Supply the Casper URL to contact for the work. if not specified, then the default set 
 					in the script will be used.
 	-u APIUsername			Supply the API username to access the Casper server and carry out the work.
 	-p APIPassword 			Supply the API Password to access the Casper server and carry out the work.
