@@ -1,12 +1,22 @@
 CasperMachineMigrator
 =====================
 
+If you are replacing a user's Mac or doing a larger hardware refresh, this is a tool to migrate the static inventory information of one Mac JSS record to another.
 
-Tool to migrate the contents of one Mac record to another.
+This script can migrate all text field Extension Attributes, drop-down menu Extension Attributes and user and location information from one JSS computer record to another.  The script can be run on a single line to move one record to another:
 
-e.g. a replacement Mac for a User. This will migrate the location info and the non-script populated Extension Attributes
+	example one line
 
+It can also be used with a tab delimited file to migrate the data for multiple records at once
 
+	example batch migration
+
+Notes:
+
+- Static group assignments aren't currently migrated (this is on the to-do list)
+- Script populated EAs aren't migrated as they are dynamically generated during inventory collections
+
+Running the script with no options will display the below help information:
 
 	Usage: CasperMachineMigrator [-v] -s SourceAssetNumber [-h] [-d DestinationAssetNumber] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
 	
