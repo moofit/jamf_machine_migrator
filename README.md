@@ -6,7 +6,9 @@ Tool to migrate the contents of one Mac record to another.
 
 e.g. a replacement Mac for a User. This will migrate the location info and the non-script populated Extension Attributes
 
-Usage: CasperMachineMigrator [-v] -s SourceAssetNumber [-h] [-d DestinationAssetNumber] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
+
+
+	Usage: CasperMachineMigrator [-v] -s SourceAssetNumber [-h] [-d DestinationAssetNumber] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
 	
 	-v				Verbose mode. Output all the things
 	-s SourceAssetNumber		Supply an Asset Number to use as the souce of the information.
@@ -26,7 +28,9 @@ Usage: CasperMachineMigrator [-v] -s SourceAssetNumber [-h] [-d DestinationAsset
 	-n				Do not prompt to carry out the export/import, just do it!
 	-f PathToFile			Use a tab delimited file to specify multiple source and destination Macs to work on.
 	-h				This help message
-API PERMISSIONS:	These MUST be allowed for the specified API user:
+	
+	
+	API PERMISSIONS:	These MUST be allowed for the specified API user:
 					-	'JSS Objects'	-
 			-	'Computer Extension Attributes' - Allow 'Read'
 			-	'Computers'	- Allow 'Read' & 'Update'
