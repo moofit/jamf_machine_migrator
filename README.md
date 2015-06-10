@@ -15,28 +15,28 @@ Notes:
 
 - Static group assignments aren't currently migrated (this is on the to-do list)
 - Script populated EAs aren't migrated as they are dynamically generated during inventory collections
-- If more than one result is found for either the source or destination computer, the script will exit.
+- If more than one result is found for either the source or destination computer, the script will exit
 
 Running the script with no options will display the below help information:
 
 	Usage: $0 [-v] -s SourceComputer [-h] [-d DestinationComputer] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
 	
-	-v				Verbose mode. Output all the things
+	-v						Verbose mode. Output all the things
 	-s SourceComputer		Supply an identifier to use as the source of the information.
-					This can be Computer Name, Serial Number, Asset Number or another unique identifer.
-					If this finds more than one match it will exit.
+							This can be Computer Name, Serial Number, Asset Number or another unique identifier.
+							If this finds more than one match it will exit.
 	-d DestinationComputer 	Supply an identifier to use as the destination of the information to import the source computer's details into.
-		-c CasperURL			Supply the Casper URL to contact for the work. if not specified, then the default set 
-					in the script will be used.
+		-c CasperURL		Supply the Casper URL to contact for the work. if not specified, then the default set 
+							in the script will be used.
 	-u APIUsername			Supply the API username to access the Casper server and carry out the work.
 	-p APIPassword 			Supply the API Password to access the Casper server and carry out the work.
-					ENCLOSE ALL PASSWORDS IN SINGLE QUOTES ' ' TO ENSURE CHARACTERS ARE PASSED CORRECTLY!
-					Also please do not use the following characters for passwords:
-					\ 	' 	£ 	" 	` 	% 	~
-	-P				The API Password will be requested.
-	-n				Do not prompt to carry out the export/import, just do it!
-	-f PathToFile			Use a tab delimited file to specify multiple source and destination Macs to work on.
-	-h				This help message
+							ENCLOSE ALL PASSWORDS IN SINGLE QUOTES ' ' TO ENSURE CHARACTERS ARE PASSED CORRECTLY!
+							Also please do not use the following characters for passwords:
+							\ 	' 	£ 	" 	` 	% 	~
+	-P					The API Password will be requested.
+	-n					Do not prompt to carry out the export/import, just do it!
+	-f PathToFile		Use a tab delimited file to specify multiple source and destination Macs to work on.
+	-h					This help message
 	
 	
 	API PERMISSIONS:	These MUST be allowed for the specified API user:
