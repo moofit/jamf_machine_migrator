@@ -42,12 +42,12 @@ Running the script with no options will display the below help information:
 	
 	
 	API PERMISSIONS:	These MUST be allowed for the specified API user:
-					-	'JSS Objects'	-
+					-	'JSS Objects'	-]
 			-	'Computer Extension Attributes' - Allow 'Read'
 			-	'Computers'	- Allow 'Read' & 'Update'
 			
 
-Below is an example of the tab delimited file required for batch migrations:
+Below is an example of the tab delimited file required for batch migrations (Source Destination on each single line):
 
 	00001	00002
 	00001	00003
