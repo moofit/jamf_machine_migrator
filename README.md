@@ -5,11 +5,11 @@ If you are replacing a user's Mac or doing a larger hardware refresh, this is a 
 
 This script can migrate all text field Extension Attributes, drop-down menu Extension Attributes and user and location information from one JSS computer record to another.  The script can be run on a single line to move one record to another:
 
-	./CasperMachineMigrator -v -s Amsys-123 -d Amsys-321 -c https://jss.amsys.co.uk:8443 -u darren -p password
+	./CasperMachineMigrator -v -s Amsys-123 -d Amsys-321 -c https://jss.amsys.co.uk:8443 -u darren -p 'password'
 
 It can also be used with a tab delimited file to migrate the data for multiple records at once
 
-	./CasperMachineMigrator -v -c https://jss.amsys.co.uk:8443 -u darren -p password -f /Users/Shared/TabFile
+	./CasperMachineMigrator -v -c https://jss.amsys.co.uk:8443 -u darren -p 'password' -f /Users/Shared/TabFile
 
 Notes:
 
