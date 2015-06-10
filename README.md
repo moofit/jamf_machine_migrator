@@ -3,6 +3,8 @@ CasperMachineMigrator
 
 If you are replacing a user's Mac or doing a larger hardware refresh, this is a tool to migrate the static inventory information of one Mac JSS record to another.
 
+**Please Note:** Please test thoroughly before using in your own environment! Amsys will accept no responsibility for loss or damage caused by this script.
+
 This script can migrate all text field Extension Attributes, drop-down menu Extension Attributes and user and location information from one JSS computer record to another.  The script can be run on a single line to move one record to another:
 
 	./CasperMachineMigrator -v -s Amsys-123 -d Amsys-321 -c https://jss.amsys.co.uk:8443 -u darren -p 'password'
@@ -43,3 +45,11 @@ Running the script with no options will display the below help information:
 					-	'JSS Objects'	-
 			-	'Computer Extension Attributes' - Allow 'Read'
 			-	'Computers'	- Allow 'Read' & 'Update'
+			
+
+Below is an example of the tab delimited file required for batch migrations:
+
+	00001	00002
+	00001	00003
+	00001	00004
+
