@@ -1,23 +1,29 @@
-CasperMachineMigrator
-=====================
+![Logo](https://x1llu7x4a4-flywheel.netdna-ssl.com/wp-content/themes/moof/images/logo.svg)
+
+# Jamf Machine Migrator
+
+## Table of Contents
+
+- [Jamf Machine Migrator](#Jamf Machine Migrator)
+  - [Purpose](#purpose)
+  - [Includes](#includes)
+  - [How to contribute](#how-to-contribute)
+  - [Support](#support)
+  - [License](#license)
+  
+## Purpose
 
 If you are replacing a user's Mac or doing a larger hardware refresh, this is a tool to migrate the static inventory information of one Mac JSS record to another.
 
-**Please Note:** Please test thoroughly before using in your own environment! Amsys will accept no responsibility for loss or damage caused by this script.
+## How to use
 
 This script can migrate all text field Extension Attributes, drop-down menu Extension Attributes and user and location information from one JSS computer record to another.  The script can be run on a single line to move one record to another:
 
-	./CasperMachineMigrator -v -s Amsys-123 -d Amsys-321 -c https://jss.amsys.co.uk:8443 -u darren -p 'password'
+	`./jamfMachineMigrator -v -s Moof-123 -d Moof-321 -c https://jss.moof.co.uk:8443 -u darren -p 'password'`
 
 It can also be used with a tab delimited file to migrate the data for multiple records at once
 
-	./CasperMachineMigrator -v -c https://jss.amsys.co.uk:8443 -u darren -p 'password' -f /Users/Shared/TabFile
-
-Notes:
-
-- Static group assignments aren't currently migrated (this is on the to-do list)
-- Script populated EAs aren't migrated as they are dynamically generated during inventory collections
-- If more than one result is found for either the source or destination computer, the script will exit
+	`./jamfMachineMigrator -v -c https://jss.moof.co.uk:8443 -u darren -p 'password' -f /Users/Shared/TabFile`
 
 Running the script with no options will display the below help information:
 
@@ -45,7 +51,6 @@ Running the script with no options will display the below help information:
 					-	'JSS Objects'	-]
 			-	'Computer Extension Attributes' - Allow 'Read'
 			-	'Computers'	- Allow 'Read' & 'Update'
-			
 
 Below is an example of the tab delimited file required for batch migrations (Source Destination on each single line):
 
@@ -53,3 +58,26 @@ Below is an example of the tab delimited file required for batch migrations (Sou
 	00001	00003
 	00001	00004
 
+Notes:
+
+- Static group assignments aren't currently migrated (this is on the to-do list)
+- Script populated EAs aren't migrated as they are dynamically generated during inventory collections
+- If more than one result is found for either the source or destination computer, the script will exit	
+
+## How to contribute
+
+1. Fork this project, if required
+2. Create a new branch (`git checkout -b myNewBranch`)
+3. Make changes, and commit (`git commit -am "myChanges"`)
+4. Push to the new branch (`git push origin myNewBranch`)
+5. Create new pull request
+
+## Support
+
+Use at your own risk. Moof IT will accept no responsibility for loss or damage caused by these scripts. Contact Moof IT if you need a custom script tailored to your environment.
+
+## License
+
+This work is licensed under http://creativecommons.org/licenses/by/4.0/.
+
+These scripts may be freely modified for personal or commercial purposes but may not be republished for profit without prior consent.

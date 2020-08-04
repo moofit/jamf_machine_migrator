@@ -2,10 +2,10 @@
 
 #############################################################################################
 #																							#
-#		Amsys Casper Machine Migrator														#
+#		Jamf Machine Migrator														#
 #																							#
 #		- This script is designed to help migrate location information and EAs				#
-#			from one Casper computer record to another, such as when kit is replaced -		#
+#			from one Jamf computer record to another, such as when kit is replaced -		#
 #																							#
 #		Current Version:	1.7																#
 #		Version history:																	#
@@ -24,7 +24,7 @@
 
 ######################################## Variables ##########################################
 
-SuppliedCasperURL="https://casper.example.com:8443"
+SuppliedJAMFURL="https://jamf.example.com:8443"
 SuppliedAPIUser="Optional-API-Username-Here"
 set -f
 SuppliedAPIPass='Optional-API-Password-Here'
@@ -46,17 +46,17 @@ CSVPath=""
 function usage {
 		echo "
 		
-Usage: $0 [-v] -s SourceComputer [-h] [-d DestinationComputer] [-c CasperURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
+Usage: $0 [-v] -s SourceComputer [-h] [-d DestinationComputer] [-c JAMFURL] [-u APIUsername] [-p APIPassword | -P] [-n] [-f PathToFile]
 	
 	-v				Verbose mode. Output all the things
 	-s SourceComputer		Supply an identifier to use as the source of the information.
 					This can be Computer Name, Serial Number, Asset Number or another unique identifer.
 					If this finds more than one match it will exit.
 	-d DestinationComputer 	Supply an identifier to use as the destination of the information to import the source computer's details into.
-	-c CasperURL			Supply the Casper URL to contact for the work. if not specified, then the default set 
+	-c JAMFURL			Supply the JAMF URL to contact for the work. if not specified, then the default set 
 					in the script will be used.
-	-u APIUsername			Supply the API username to access the Casper server and carry out the work.
-	-p APIPassword 			Supply the API Password to access the Casper server and carry out the work.
+	-u APIUsername			Supply the API username to access the JAMF server and carry out the work.
+	-p APIPassword 			Supply the API Password to access the JAMF server and carry out the work.
 					ENCLOSE ALL PASSWORDS IN SINGLE QUOTES ' ' TO ENSURE CHARACTERS ARE PASSED CORRECTLY!
 					Also please do not use the following characters for passwords:
 					\\ 	' 	£ 	\" 	\` 	% 	~
@@ -86,7 +86,7 @@ while getopts 'hs:vd:c:u:p:Pnf:' flag; do
     s) SOURCECOMPUTER="${OPTARG}" ;;
     v) verbose='on' ;;
     d) DESTINATIONCOMPUTER="${OPTARG}" ;;
-    c) CasperURL="${OPTARG}" ;;
+    c) JAMFURL="${OPTARG}" ;;
     u) APIUser="${OPTARG}" ;;
     p) set -f; APIPass="${OPTARG}"; set +f ;;
     P) AskForAPIPassword="yes";;
@@ -112,22 +112,22 @@ if [ $# -lt "$MinimumItems" ]
 fi
 
 ########
-# See if override casper url has been specified
-if [ "$CasperURL" = "" ]
+# See if override jamf url has been specified
+if [ "$JAMFURL" = "" ]
 	then
-		CasperURL="$SuppliedCasperURL"
+		JAMFURL="$SuppliedJAMFURL"
 fi
-CasperURL=${CasperURL%/}
+JAMFURL=${JAMFURL%/}
 
 ########
-# See if override casper API Username has been specified
+# See if override jamf API Username has been specified
 if [ "$APIUser" = "" ]
 	then
 		APIUser="$SuppliedAPIUser"
 fi
 
 ########
-# See if override casper API Password has been specified
+# See if override jamf API Password has been specified
 set -f
 if [ "$APIPass" = "" ]
 	then
@@ -166,7 +166,7 @@ while [ $counter -ne 0 ]
 	# Echo out details
 	echo "Supplied Source Asset number is: "$SOURCECOMPUTER""
 	echo "Supplied Destination Asset number is: "$DESTINATIONCOMPUTER""
-	echo "Supplied Casper Server URL is: "$CasperURL""
+	echo "Supplied JAMF Server URL is: "$JAMFURL""
 
 	#####
 	# Swaps any spaces for %20
@@ -177,7 +177,7 @@ while [ $counter -ne 0 ]
 
 	#####
 	# Test the provided API authentication works!
-	testresult=$(curl -s -w "%{http_code}" -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers -X GET -o /dev/null)
+	testresult=$(curl -s -w "%{http_code}" -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers -X GET -o /dev/null)
 	if [ $verbose = on ]
 		then
 			echo "VERBOSE: Checking provided details authenticate"
@@ -188,14 +188,14 @@ while [ $counter -ne 0 ]
 		then
 			echo "ERROR"
 			echo "ERROR: API Username / password combination failed to authenticate. Curl status code: $testresult"
-			echo "ERROR: Re-check the Casper URL and other details provided. Also check the help page for possible unsupported characters in the password"
+			echo "ERROR: Re-check the JAMF URL and other details provided. Also check the help page for possible unsupported characters in the password"
 			usage
 	fi
 
 	if [ $testresult = 404 ]
 		then
 			echo "ERROR"
-			echo "ERROR: The Casper Server couldn't find the requested URL. Curl status code: $testresult"
+			echo "ERROR: The JAMF Server couldn't find the requested URL. Curl status code: $testresult"
 			echo "ERROR: Please investigate."
 			usage
 	fi
@@ -203,7 +203,7 @@ while [ $counter -ne 0 ]
 	if [ $testresult = 500 ]
 		then
 			echo "ERROR"
-			echo "ERROR: The Casper Server had an internal error. Curl status code: $testresult"
+			echo "ERROR: The JAMF Server had an internal error. Curl status code: $testresult"
 			echo "ERROR: Please try again, or check the server is operational!"
 			usage
 	fi
@@ -214,7 +214,7 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Checking for source matches"
 	fi
-	CompIDnumber=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/match/"$SearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./' | grep -c [0-9])
+	CompIDnumber=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/match/"$SearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./' | grep -c [0-9])
 
 	if [ "$CompIDnumber" == 0 ]
 		then
@@ -240,7 +240,7 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Getting source Computer ID"
 	fi	
-	CompID=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/match/"$SearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./')
+	CompID=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/match/"$SearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./')
 	if [ $verbose = on ]
 		then
 			echo "VERBOSE: Source Computer ID is: $CompID"
@@ -252,7 +252,7 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Checking for destination matches"
 	fi
-	DestCompIDnumber=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/match/"$DestSearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./' | grep -c [0-9])
+	DestCompIDnumber=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/match/"$DestSearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./' | grep -c [0-9])
 
 	if [ "$DestCompIDnumber" == 0 ]
 		then
@@ -278,7 +278,7 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Getting destination Computer ID"
 	fi	
-	DestCompID=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/match/"$DestSearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./')
+	DestCompID=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/match/"$DestSearchItem" -X GET | xpath '//computer/id' 2>&1 | awk -F'<id>|</id>' '{print $2}'| awk '/./')
 	if [ $verbose = on ]
 		then
 			echo "VERBOSE: Destination Computer ID is: $DestCompID"
@@ -292,18 +292,18 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Grabbing specified computer's Location information"
 	fi	
-	LocationInfo=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET)
+	LocationInfo=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET)
 
 	#####
 	# Work to make the Location info more pretty
-	Username=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/username' 2>&1 | awk -F'<username>|</username>' '{print $2}'| awk '/./')
-	Realname=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/real_name' 2>&1 | awk -F'<real_name>|</real_name>' '{print $2}'| awk '/./')
-	EmailAddress=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/email_address' 2>&1 | awk -F'<email_address>|</email_address>' '{print $2}'| awk '/./')
-	Position=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/position' 2>&1 | awk -F'<position>|</position>' '{print $2}'| awk '/./')
-	Phone=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/phone' 2>&1 | awk -F'<phone>|</phone>' '{print $2}'| awk '/./')
-	Department=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/department' 2>&1 | awk -F'<department>|</department>' '{print $2}'| awk '/./')
-	Building=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/building' 2>&1 | awk -F'<building>|</building>' '{print $2}'| awk '/./')
-	Room=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/room' 2>&1 | awk -F'<room>|</room>' '{print $2}'| awk '/./')
+	Username=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/username' 2>&1 | awk -F'<username>|</username>' '{print $2}'| awk '/./')
+	Realname=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/real_name' 2>&1 | awk -F'<real_name>|</real_name>' '{print $2}'| awk '/./')
+	EmailAddress=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/email_address' 2>&1 | awk -F'<email_address>|</email_address>' '{print $2}'| awk '/./')
+	Position=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/position' 2>&1 | awk -F'<position>|</position>' '{print $2}'| awk '/./')
+	Phone=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/phone' 2>&1 | awk -F'<phone>|</phone>' '{print $2}'| awk '/./')
+	Department=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/department' 2>&1 | awk -F'<department>|</department>' '{print $2}'| awk '/./')
+	Building=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/building' 2>&1 | awk -F'<building>|</building>' '{print $2}'| awk '/./')
+	Room=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/Location -X GET | xpath '//computer/location/room' 2>&1 | awk -F'<room>|</room>' '{print $2}'| awk '/./')
 
 	#####
 	# Display Location information in XML
@@ -334,7 +334,7 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Grabbing specified computer's MAC address"
 	fi	
-	MAC=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/id/$CompID/subset/General | xpath '//computer/general/mac_address' 2>&1 | awk -F'<mac_address>|</mac_address>' '{print $2}'| awk '/./' )
+	MAC=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/id/$CompID/subset/General | xpath '//computer/general/mac_address' 2>&1 | awk -F'<mac_address>|</mac_address>' '{print $2}'| awk '/./' )
 	if [ $verbose = on ]
 		then
 			echo "VERBOSE: MAC Address is: $MAC"
@@ -342,7 +342,7 @@ while [ $counter -ne 0 ]
 
 	#####
 	# Grab and show found computer's EAs
-	ExtensionAttributes=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/macaddress/$MAC/subset/extension_attributes -X GET)
+	ExtensionAttributes=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/macaddress/$MAC/subset/extension_attributes -X GET)
 	if [ $verbose = on ]
 		then
 			echo "VERBOSE: EA Info: "$ExtensionAttributes""
@@ -390,7 +390,7 @@ while [ $counter -ne 0 ]
 
 	for id in $(echo "$EA_IDs")
 		do
-			EA_Type=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computerextensionattributes/id/$id -X GET | xpath '//computer_extension_attribute/input_type/type' 2>&1 | awk -F'<type>|</type>' '{print $2}' | awk '/./')
+			EA_Type=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computerextensionattributes/id/$id -X GET | xpath '//computer_extension_attribute/input_type/type' 2>&1 | awk -F'<type>|</type>' '{print $2}' | awk '/./')
 			if [[ "$EA_Type" == *script* ]]
 				then
 					if [ $verbose = on ]
@@ -402,7 +402,7 @@ while [ $counter -ne 0 ]
 						then
 							echo "VERBOSE: ID $id is of type "$EA_Type" and will be included"
 					fi	
-					idvalue=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/macaddress/"$MAC"/subset/extension_attributes  | xpath "//extension_attribute[id="$id"]" 2>&1 | awk -F'<value>|</value>' '{print $2}' | awk '/./')
+					idvalue=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/macaddress/"$MAC"/subset/extension_attributes  | xpath "//extension_attribute[id="$id"]" 2>&1 | awk -F'<value>|</value>' '{print $2}' | awk '/./')
 					if [ $verbose = on ]
 						then
 							echo "VERBOSE: Value of EA $id is "$idvalue""
@@ -439,10 +439,10 @@ while [ $counter -ne 0 ]
 		EA_IDs=$(echo $ExtensionAttributes | xpath '//computer/extension_attributes/extension_attribute/id' 2>&1 | awk -F'<id>|</id>' '{print $2}' | awk '/./')
 		for id in $(echo "$EA_IDs")
 			do
-				EA_Type=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computerextensionattributes/id/$id -X GET | xpath '//computer_extension_attribute/input_type/type' 2>&1 | awk -F'<type>|</type>' '{print $2}' | awk '/./')
+				EA_Type=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computerextensionattributes/id/$id -X GET | xpath '//computer_extension_attribute/input_type/type' 2>&1 | awk -F'<type>|</type>' '{print $2}' | awk '/./')
 				if [[ "$EA_Type" != *script* ]]
 					then
-						idvalue=$(curl -s -u "$APIUser":"$APIPass" "$CasperURL"/JSSResource/computers/macaddress/"$MAC"/subset/extension_attributes  | xpath "//extension_attribute[id="$id"]" 2>&1 | awk -F'<value>|</value>' '{print $2}' | awk '/./')
+						idvalue=$(curl -s -u "$APIUser":"$APIPass" "$JAMFURL"/JSSResource/computers/macaddress/"$MAC"/subset/extension_attributes  | xpath "//extension_attribute[id="$id"]" 2>&1 | awk -F'<value>|</value>' '{print $2}' | awk '/./')
 						echo "ID: 	$id"
 						echo "Value:	$idvalue"
 				fi
@@ -466,12 +466,12 @@ while [ $counter -ne 0 ]
 		then
 			echo "VERBOSE: Importing location information from $CompID to $DestCompID"
 	fi	
-	curl -s -u "$APIUser":$APIPass "$CasperURL"/JSSResource/computers/id/$DestCompID -X PUT -T $LocationTempFile &> /dev/null
+	curl -s -u "$APIUser":$APIPass "$JAMFURL"/JSSResource/computers/id/$DestCompID -X PUT -T $LocationTempFile &> /dev/null
 	if [ $verbose = on ]
 		then
 			echo "VERBOSE: Importing Non-Scripted EA information from $CompID to $DestCompID"
 	fi	
-	curl -s -u "$APIUser":$APIPass "$CasperURL"/JSSResource/computers/id/$DestCompID -X PUT -T $EATempFile &> /dev/null
+	curl -s -u "$APIUser":$APIPass "$JAMFURL"/JSSResource/computers/id/$DestCompID -X PUT -T $EATempFile &> /dev/null
 
 	################################### CLEAN UP ##############################################
 
